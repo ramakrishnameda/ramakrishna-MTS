@@ -1,0 +1,121 @@
+question 1---
+
+app.comoponent.html
+<div class="card" style="width: 16rem;" height="10rem;">
+  <img src="../assets/realme.png" class="card-img-top" alt="image loading....">
+  <div class="card-body">
+    <h4>Category:{{ProductTitle}}</h4>
+    <h4>Price:{{ProductPrice}}</h4>
+    <h4>Stock:{{Stock}}</h4>
+    <input type="submit" class="bg-success"  value="ADD TO CART" (click)="store(myform)" >
+  </div>
+</div>
+
+
+
+app.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  ProductTitle:string="REAL ME";
+  ProductPrice:number=12000;
+  Stock:number=3;
+}
+
+
+question 3
+ app.component.html
+ <div class="container">
+  <h2 style="text-align: center;">PRODUCT DETAILS</h2>
+
+  <form [formGroup]="myform" (ngSubmit)="store()">
+
+    <div class="form-group">
+      <label for="pname"><b>Product Name</b></label><br>
+      <input type="text" class="form-control" id="pname" formControlName="pname"><br>
+      <small style="color: red" *ngIf="pname && pname.invalid && pname.touched" >Name is Required</small>
+    </div><br>
+
+    <div class="form-group">
+      <label for="pbrand"><b>Product Brand</b></label><br>
+      <input type="text" class="form-control" id="pbrand" formControlName="pbrand"><br>
+      <small style="color: red" *ngIf="pbrand && pbrand.invalid && pbrand.touched" >Brand is Required</small>
+    </div><br>
+
+    <div class="form-group">
+      <label for="pprice"><b>Product Price</b></label><br>
+      <input type="text" class="form-control" id="pprice" formControlName="pprice"><br>
+      <small  style="color: red" *ngIf="pprice && pprice.invalid && pprice.touched">Name is Required</small>
+    </div><br>
+
+    <button type="submit" class="btn btn-primary"  >STORE</button>
+  </form>
+
+</div>
+
+<div style="margin-top: 10px; margin-left: 550px;">
+
+  <table class="table" border="1px">
+    <thead class="thead-light">
+      <tr>
+        <td>PRODUCT NAME</td>
+        <td>PRODUCT BRAND</td>
+        <td>PRODUCT PRICE</td>
+      </tr>
+      <tr *ngFor="let pd of products">
+        <td>{{pd.pname}}</td>
+        <td>{{pd.pbrand}}</td>
+        <td>{{pd.pprice}}</td>
+      </tr>
+    </thead>
+
+  </table>
+
+</div>
+
+
+app.component.ts
+
+import { Component } from '@angular/core';
+import { store } from '@angular/core/src/render3';
+import { FormGroup, FormControl,Validators } from '@angular/forms';
+import { Product } from './product';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  myform:FormGroup;
+  products:Product[]=[];
+  
+  constructor(){
+    this.myform=new FormGroup({
+      pname:new FormControl(null,[Validators.required]),
+      pbrand:new FormControl(null,[Validators.required]),
+      pprice:new FormControl(null,[Validators.required]),
+    })
+  }
+    get pname(){
+      return this.myform.get('pname');
+    }
+    get pbrand(){
+      return this.myform.get('pbrand');
+    }
+    get pprice(){
+      return this.myform.get('pprice');
+    }
+
+    store(){
+      this.products.push(new Product(this.myform.value.pname,this.myform.value.pbrand,this.myform.value.pprice));
+      console.log(this.products);
+      this.myform.reset();
+    }
+  
+}
